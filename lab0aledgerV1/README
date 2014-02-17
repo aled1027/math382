@@ -1,0 +1,9 @@
+Name: Alex Ledger
+Login: aledger
+Lab 0
+Due Friday January 31
+
+My bubble sort works identically to the one descibed in CLRS. In essence, it works by repeatedly swapping adjacent elements that are out of order until the entire sequence is in order. The looping sequence works by starting with the ith element as the 0th element and iterating until the nth element. At each element, a second loop is initiated that starts at the nth element and works backward until the ith element, swapping out of order elements along the way. 
+
+
+The code for bubble sort is in bubble.scala in the function bubbleSort

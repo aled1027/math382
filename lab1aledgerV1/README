@@ -1,0 +1,14 @@
+Name: Alex Ledger
+login: aledger
+Lab 1
+Due Friday February 7
+
+My iterative merge sort works the same as the iterative merge-sort described in the problem statement and is quite similar to generic mergesort. It works by partitioning the unsorted array into n/k slices of length k, merging adjacent slices, and then working on merged slices, such that now k = 2k and there are half as many slices in the list. 
+
+My iterative merge sort works with a for loop nested inside a while loop. The for loop iterates down the list, merging adjacent slices. You can think of the while loop as serving as a recursive mechanism. It provides the code for incrementing k and houses the termination condition (when k = n (the size of the array)). 
+
+The merge function is identical to a merge function of generic merge-sort. This program differs from merge-sort in that it is not technically recursive and it doesn't create new arrays on the stack in the merge-sort function. Instead, it works with the same array throughout merge-sort, but it does create new arrays in the merge function. 
+
+I believe that this is Omega(n*lg(n)), just like generic merge-sort. Without going into too much detail, lg(n) comes from the fact that we are dividing the array into half, which occurs n times. And the n comes from the merge function, where we combine the two lists, hence at each level, where there are lg(n) levels total, the program takes n time, hence Omega(n*lg(n))
+
+Final note: this implementation assumes an inputted array of length 2^n. 
