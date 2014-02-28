@@ -1,11 +1,3 @@
-To tar: 
-tar cvfpz labXaledgerV1.tgz labXaledger
-
-ssh aledger@ravioli.reed.edu ::: remote polytopia access
-	or gyoza
-	VPN access
-
-
 lg = log base 2 of x
 
 Selection Sort

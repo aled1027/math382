@@ -1,0 +1,21 @@
+Name: Alex Ledger
+Login: aledger
+Lab 2
+Due Monday February 24
+
+Select.scala
+Input: 	(a) random n i where n = size of array and i=ith index
+		(b) a_0 a_1 ... a_n i where a makes the array and i=ith index
+Output: If the inputted array A were sorted, the program outputs A(i)
+
+How select works:
+	Select works through a divide and conquer method by using paritition (the same partition as used in quicksort). Select first calls a helper method, selectHelper which takes 4 arguments: i:Int, a:Array[Int], l and r. l and r are the left and right bounds of the portion of the array that selectHelper should look at. The first call of selectHelper from select sets l=0 and r=a.length-1, so as the search the entire array. Select helper then partitions the Array from l to r around the pivot, which for the sake of simplicity I have chosen to be a(l). After partitioning, select helper checks whether i is the pivot, is contained in the portion of the list before or is contained in the portion of the list after the pivot. If i is the pivot, specifically, l+i=n where n is the index of the pivot, we have reached the base case. The program terminates and returns a(n), the value of the pivot. If i is contained in the portion of the list before the pivot, the program recursively class selectHelper again of the on the first part of the array, specifically, selectHelper(i, a (the array), l, n-1) where n is the index of the pivot. Otherwise, in the case where i is contained the portion of the list after the pivot, the program recurisvely calls selectHelper on the second part of the list, specifically, selectHelper(i-((n+1)-l), a, n+1, r). 
+
+
+How does partition work?
+	Move the pivot to the last spot. 
+	Go from l to r. If we hit a number that is less or equal to the pivot:
+		swap the number with i. 
+	i keeps track of the dividing point between the side greater than and less than the pivot. 
+		Precisely, i is the index of the first number greater than the pivot
+		Naturally, the pivot will be swapped with i. Then (i-1) is the index of the pivot. 
