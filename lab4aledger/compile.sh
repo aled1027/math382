@@ -5,4 +5,4 @@
 
 #compiles the *.scala file and places the *.class and *$.class files in the classes folder
 
-scalac -d classes $1
+scalac $1 -d classes

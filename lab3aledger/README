@@ -1,0 +1,29 @@
+Name: Alex Ledger
+login: aledger
+Lab 3
+Due March 14
+
+tl;dr moves all items from right stack to left stack. Works in O(m) stack operations. 
+
+My queue works by using two stacks, which I call leftStack and rightStack. Depending on the operation, the two stacks exchange all of the values stored by the queue. The leftStack, when it has the values, holds all of the values in order. The rightStack, when it has the values, holds the values in reverse order. The stacks either have all of the values or none of the values. 
+
+isLeft is a boolean indicating which stack currently has the values. If isLeft is true, then the leftStack has the values (stored in correct order). If false, then the rightStack has the values in reverse order. 
+
+enqueue()
+
+Enqueue varies depending on if the leftStack or rightStack currently has the values. If leftStack has the values, then I move all of the values to the rightStack and put the new value on top of the rightStack. This takes invariably m (if m is the amount of values in the queue) stack operations. If rightStack has the values, I put the new value on the leftStack (which was previously empty), and then move all of the values from the rightStack to the leftStack (essentially "on top of" the new
+value). The increment the size and set isLeft to its opposite, since the values are now on the other stack. 
+
+dequeue()
+
+dequeue is quite simple. If the values are on the leftStack, then just pop off the top value and return it. If the values are on the rightStack, then move all of the values to the leftStack, pop off the top value and return it. The former process takes 1 stack operation. The latter process takes m stack operations. 
+
+isEmpty() 
+
+returns a boolean. True if the stack is empty; false if the stack is not empty. It works by checking if the size variable is 0. Size is incremented and decremented by enqueue and dequeue respectively. 
+
+
+getSize()
+
+returns size:Int, the size of the Queue
+

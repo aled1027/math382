@@ -1,0 +1,43 @@
+Name: Alex Ledger
+login: aledger
+Lab 4
+
+val pq:PQueue = new PQueue();
+var f:Handle = pq.insert(11,11);
+var d:Handle = pq.insert(7,7);
+var a:Handle = pq.insert(5,5);
+var e:Handle = pq.insert(9,9);
+var c:Handle = pq.insert(3,3);
+println(pq.toString);
+pq.decreaseKey(1,f);
+println(pq.toString);
+pq.delete(f);
+println(pq.toString);
+pq.delete(e);
+println(pq.toString);
+pq.delete(a);
+println(pq.toString);
+
+aka:
+
+insert (11,11),(7,7),(5,5),(9,9),(3,3)
+decrease (11,11) to (11,1)
+delete (11,11)
+delete (9,9)
+delete (5,5)
+
+
+[ ( 3@3 ) 5@5 7@7 9@9 11@11 ]
+[ ( 11@1 ) 3@3 5@5 7@7 9@9 ]
+[ ( 3@3 ) 5@5 7@7 9@9 ]
+[ ( 3@3 ) 5@5 7@7 ]
+[ ( 3@3 ) 7@7 ]
+
+insert: Does a special case for first and last. Otherwise compares new node with last, and then last.prev until it finds its spot
+
+decreaseKey:
+	pretty much the saem as insert. Has a special case for first, nodes moving to first, last node staying last. Otherwise, it removes the node from the list and then walks down the list starting with its old position in order to find its new position. The procedure in the latter part is the same as insert
+
+Delete:
+	Special case for first and last. Otherwise just sets links of item.prev and item.next to each other. The first and last has to deal with changing first.next and first.prev. 
+
