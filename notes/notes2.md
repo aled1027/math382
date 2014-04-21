@@ -1,3 +1,4 @@
+## Hashmaps ##
     H = new Heap[Vertex](Cost: HashMap[Vertex,Double]) // datastructure needs access to cost function
     H.insert(v)
     V = H.removeMin();
@@ -22,4 +23,6 @@
         -- subtracting point3d gives vector3d
         -- dz = positive if elevation gain; 0 otherwise (not sure if I want it)
 
-- Use a hashtable
+- Use a hashtable 
+
+
