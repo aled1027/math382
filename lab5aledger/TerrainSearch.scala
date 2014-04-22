@@ -139,6 +139,16 @@ import scala.collection.mutable.HashMap;
 
 class TerrainSearch(terrain:Terrain) {
 
+  def weight(v1:Vertex, v2:Vertex):Double = {
+      var retVal:Double = v1.z - v2.z;
+
+      // take absolute value
+      if (retVal < 0) { retVal = -retVal; }
+
+      return retVal*1000;
+
+  }
+
   def pathTo(start:Vertex,end:Vertex):List[Edge] = {
 
         // marked:
@@ -157,46 +167,59 @@ class TerrainSearch(terrain:Terrain) {
         // v has at most one entry, its "into" edge.
 
     val marked:HashSet[Vertex] = new HashSet[Vertex]();
-    val prd:HashMap[Vertex,Vertex] = new HashMap[Vertex,Vertex]();
+    val pred:HashMap[Vertex,Vertex] = new HashMap[Vertex,Vertex]();
     val linkTo:HashMap[Vertex,Edge] = new HashMap[Vertex,Edge]();
 
     val dist:HashMap[Vertex,Double] = new HashMap[Vertex,Double]();
+    dist(start) = 0;
+
     val H = new Heap[Vertex](dist);
-    dist[H] = 0;
     H.insert(start);
 
     while (!H.isEmpty) {
-        val u:Vertex = H.extractMin(); // grab next vertex from queue
-        if (!marked.contains(u)) {
-	        marked.add(u);
-	        for (e <- u.outEdges) { // check outEdges
-	            // Get the neighbor vertex assoc'd with that edge.
-	            val v:Vertex = e.to;  
-	            if (!marked.contains(v)) {
-	                // If it hasn't yet been checked...
-	                H.decreaseKey(v);       // put it on the queue,
-	                pred.update(v,u);   // make or update its pred entry,
-	                linkTo.update(v,e); // and do the same with its link.
-	            }
-	        }
-      }   
+     //   println("Size of dist is " + dist.size); 
+        val u:Vertex = H.extractMin(); 
+	    for (e <- u.outEdges) { 
+            // get associated vertex
+	        val v:Vertex = e.to; 
+
+            val alt = dist(u) + weight(u,v);
+
+            // inline intializization of dist
+            if (!dist.contains(v)) { 
+    //            println("adding " + v + " to dist");
+                dist(v) = 10000000;
+            }
+            if (alt < dist(v)) {
+                dist(v) = alt;
+                pred.update(v,u);
+	            linkTo.update(v,e); // and do the same with its link.
+
+                if (H.contains(v)) {
+	                H.decreaseKey(v);       
+                } else {
+                    H.insert(v)
+                }
+            }
+	    }
     }
 
+    var v:Vertex = end;
     var es:List[Edge] = Nil;
 
-    //while (pred.contains(v) && linkTo.contains(v)) {
+    while (pred.contains(v) && linkTo.contains(v)) {
 
-    //  // ...shove the link into v onto the front,
-    //es = linkTo(v)::es;
+      // ...shove the link into v onto the front,
+    es = linkTo(v)::es;
 
-    //  // and advance to the prior vertex.
-    //  v = pred(v);
-    //  print("from...");
-    //}
+      // and advance to the prior vertex.
+      v = pred(v);
+      print("from...");
+    }
 
-    //// Give back that path to the viewer.
-    //println("done.");
-    //println("Path of length "+es.length+" found.");
+    // Give back that path to the viewer.
+    println("done.");
+    println("Path of length "+es.length+" found.");
     return es;
   }    
 }
