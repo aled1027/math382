@@ -132,7 +132,6 @@
 // hike between the two endpoints.
 //
 
-import scala.collection.mutable.PriorityQueue
 import scala.collection.mutable.Queue;
 import scala.collection.mutable.HashSet;
 import scala.collection.mutable.HashMap;
@@ -141,62 +140,93 @@ class TerrainSearch(terrain:Terrain) {
 
   def pathTo(start:Vertex,end:Vertex):List[Edge] = {
 
-        // marked:
-        // Set of all vertices whose neighbors have already been
-        // considered.
-        //
-        // prd:
-        // Collection of vertex pairs (v,pi[v]), where pi[v] is
-        // the vertex that led to v during the search.
-        //
-        // linkTo:
-        // Collection of vertex pairs (v,e), where e is the edge
-        // that led into v during the search.  That edge e corresponds
-        // to the directed graph edge (pred(v),v).
-        // It is a "map" maintained by the search code.  Each vertex
-        // v has at most one entry, its "into" edge.
-
+    // marked:
+    //
+    // Set of all vertices whose neighbors have already been
+    // considered.
+    //
+    // It is a "set" maintained by the search code.
+    //
     val marked:HashSet[Vertex] = new HashSet[Vertex]();
-    val prd:HashMap[Vertex,Vertex] = new HashMap[Vertex,Vertex]();
+
+    // pred:
+    //
+    // Collection of vertex pairs (v,pi[v]), where pi[v] is
+    // the vertex that led to v during the search.
+    //
+    // It is a "map" maintained by the search code.  Each vertex
+    // v has at most one entry, its pred(v). 
+    
+    val pred:HashMap[Vertex,Vertex] = new HashMap[Vertex,Vertex]();
+
+    // linkTo:
+    //
+    // Collection of vertex pairs (v,e), where e is the edge
+    // that led into v during the search.  That edge e corresponds
+    // to the directed graph edge (pred(v),v).
+    //
+    // It is a "map" maintained by the search code.  Each vertex
+    // v has at most one entry, its "into" edge.
+    //
     val linkTo:HashMap[Vertex,Edge] = new HashMap[Vertex,Edge]();
 
-    val dist:HashMap[Vertex,Double] = new HashMap[Vertex,Double]();
-    val H = new Heap[Vertex](dist);
-    dist[H] = 0;
-    H.insert(start);
+    // Q: queue of vertices used by BFS, initially empty
+    // 
+    val Q:Queue[Vertex] = new Queue[Vertex]();
 
-    while (!H.isEmpty) {
-        val u:Vertex = H.extractMin(); // grab next vertex from queue
-        if (!marked.contains(u)) {
-	        marked.add(u);
-	        for (e <- u.outEdges) { // check outEdges
-	            // Get the neighbor vertex assoc'd with that edge.
-	            val v:Vertex = e.to;  
-	            if (!marked.contains(v)) {
-	                // If it hasn't yet been checked...
-	                H.decreaseKey(v);       // put it on the queue,
-	                pred.update(v,u);   // make or update its pred entry,
-	                linkTo.update(v,e); // and do the same with its link.
-	            }
-	        }
+    // Search from the start vertex.
+    Q.enqueue(start);
+
+    // While there are vertices in the queue...
+    while (!Q.isEmpty) {
+
+      // ...grab the next vertex from the queue.
+      val u:Vertex = Q.dequeue;
+
+      // If we haven't checked its neighbors yet (it's
+      // possible that we could enqueue a vertex twice),
+      // i.e, if it hasn't been marked...
+      if (!marked.contains(u)) {
+
+	// ... mark it,
+	marked.add(u);
+	// then check each of the edges out of it.
+	for (e <- u.outEdges) {
+
+	  // Get the neighbor vertex assoc'd with that edge.
+	  val v:Vertex = e.to;  
+
+	  if (!marked.contains(v)) {
+	    // If it hasn't yet been checked...
+	    Q.enqueue(v);       // put it on the queue,
+	    pred.update(v,u);   // make or update its pred entry,
+	    linkTo.update(v,e); // and do the same with its link.
+	  }
+	}
       }   
     }
 
+    // Build a list of edges that lead from the start to the end,
+    // working backwards from the end, using pred/linkTo.
+    var v:Vertex = end;
     var es:List[Edge] = Nil;
+    print("Building path...");
 
-    //while (pred.contains(v) && linkTo.contains(v)) {
+    // While a vertex has a pred/link...
+    // (this should only "fail" if v == start)
+    while (pred.contains(v) && linkTo.contains(v)) {
 
-    //  // ...shove the link into v onto the front,
-    //es = linkTo(v)::es;
+      // ...shove the link into v onto the front,
+      es = linkTo(v)::es;
 
-    //  // and advance to the prior vertex.
-    //  v = pred(v);
-    //  print("from...");
-    //}
+      // and advance to the prior vertex.
+      v = pred(v);
+      print("from...");
+    }
 
-    //// Give back that path to the viewer.
-    //println("done.");
-    //println("Path of length "+es.length+" found.");
+    // Give back that path to the viewer.
+    println("done.");
+    println("Path of length "+es.length+" found.");
     return es;
   }    
 }

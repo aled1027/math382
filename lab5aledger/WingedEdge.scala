@@ -1,4 +1,4 @@
-class Vertex(loc:Point3D) extends Iterable[Edge] {
+class Vertex(loc:Point3D) {
 
   val location:Point3D = loc;
   var first:Edge = null;
@@ -37,9 +37,7 @@ class Vertex(loc:Point3D) extends Iterable[Edge] {
     }
   }
 
-  def outEdges:Iterator[Edge] = iterator;
- 
-  def iterator:Iterator[Edge] = new Iterator[Edge] {
+  def outEdges:Iterator[Edge] = new Iterator[Edge] {
     private var hasStarted:Boolean = false;
     private var current:Edge = first;
     def hasNext:Boolean = {
@@ -101,7 +99,6 @@ class Edge(f:Vertex,t:Vertex) {
   }
 
   def twinUp(e:Edge):Unit = {
-    if (e == null) println("FUCK");
     this.twin = e;
     e.twin = this;
   }

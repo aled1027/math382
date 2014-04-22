@@ -1,0 +1,18 @@
+import scala.collection.mutable.HashMap;
+val dist = new HashMap[Vertex,Double]();
+val loc1 = new Point3D(1.0,1.0,1.0);
+val loc2 = new Point3D(1.0,2.0,3.0);
+val loc3 = new Point3D(6.5,12.0,7.0);
+val vert1 = new Vertex(loc1);
+val vert2 = new Vertex(loc2);
+val vert3 = new Vertex(loc3);
+dist.update(vert1,3.0);
+dist.update(vert2,5.0);
+dist.update(vert3,1.0);
+val H = new Heap[Vertex](dist);
+H.insert(vert1)
+H.insert(vert2)
+H.insert(vert3)
+
+
+

@@ -1,0 +1,7 @@
+class Heap[T:scala.reflect.ClassTag](priority:HashMap[T,Double]) {
+  def insert(item:T):Unit;
+  def contains(item:T):Boolean;
+  def isEmpty():Boolean;
+  def decreaseKey(item:T):Unit;
+  def extractMin():T;
+}

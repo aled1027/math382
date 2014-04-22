@@ -65,7 +65,7 @@ class Vector3D(x0:Double, y0:Double, z0:Double) {
   }
 
   def magnitude():Double = {
-    return Math.sqrt(this.dot(this));
+    return math.sqrt(this.dot(this));
   }
 
   def direction():Vector3D = {

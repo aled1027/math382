@@ -13,9 +13,9 @@ class Point3D(x0:Double, y0:Double, z0:Double) {
   def oproject(spin:Double, tilt:Double):Point3D = {
     val s = spin;
     val t = tilt;
-    val px = x * Math.cos(s) - y * Math.sin(s);
-    val py = (x * Math.sin(s) + y * Math.cos(s))*Math.sin(-t) + z * Math.cos(-t);
-    return new Point3D(px, py, z * Math.sin(-t));
+    val px = x * math.cos(s) - y * math.sin(s);
+    val py = (x * math.sin(s) + y * math.cos(s))*math.sin(-t) + z * math.cos(-t);
+    return new Point3D(px, py, z * math.sin(-t));
   }
 
   def +(v:Vector3D):Point3D = {

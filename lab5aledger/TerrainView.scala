@@ -1,8 +1,6 @@
-//import java.awt._;
 import java.awt.event._;
 import java.awt.geom._;
 import javax.swing._;
-//import java.util._;
 
 class TerrainView(t:Terrain) extends JPanel with MouseListener with MouseMotionListener {
 
@@ -44,12 +42,12 @@ class TerrainView(t:Terrain) extends JPanel with MouseListener with MouseMotionL
     var t = tilt + (tilt1 - tilt0);
     if (t > 1.0) t = 1.0;
     if (t < 0.0) t = 0.0;
-    return t*Math.PI/2.0;
+    return t*math.Pi/2.0;
   }
 
   def light():Vector3D = {
     val s = currentSpin();
-    return (new Vector3D(Math.cos(-s-Math.PI/2),Math.sin(-s-Math.PI/2.0),-0.5)).unit();
+    return (new Vector3D(math.cos(-s-math.Pi/2),math.sin(-s-math.Pi/2.0),-0.5)).unit();
   }
 
   def project(v:Vertex):Point2D = {
@@ -120,7 +118,7 @@ class TerrainView(t:Terrain) extends JPanel with MouseListener with MouseMotionL
     
     // center the origin, make the coordinate system right-handed
     g2d.translate((WIDTH/2.0),(HEIGHT/2.0));
-    g2d.scale(WIDTH / 2.0 * Math.sqrt(0.5), HEIGHT / 2.0 * Math.sqrt(0.5));
+    g2d.scale(WIDTH / 2.0 * math.sqrt(0.5), HEIGHT / 2.0 * math.sqrt(0.5));
     g2d.scale(1.0,-1.0);
     
     g2d.setRenderingHint(java.awt.RenderingHints.KEY_ANTIALIASING, 
@@ -131,7 +129,7 @@ class TerrainView(t:Terrain) extends JPanel with MouseListener with MouseMotionL
     //
 
     // for each facet of the terrain
-    for (f <- terrain.render(Math.cos(-spin+Math.PI) < 0.0)) {
+    for (f <- terrain.render(math.cos(-spin+math.Pi) < 0.0)) {
 
       // determine the projected outline of the facet
       val path:GeneralPath = new GeneralPath();
@@ -212,8 +210,8 @@ class TerrainView(t:Terrain) extends JPanel with MouseListener with MouseMotionL
     repaint();
   }
   def mouseClicked(evt:MouseEvent):Unit = { 
-    clickx = (2.0*evt.getX()/WIDTH.toDouble - 1.0)*Math.sqrt(2.0);
-    clicky = -(2.0*evt.getY()/HEIGHT.toDouble - 1.0)*Math.sqrt(2.0);
+    clickx = (2.0*evt.getX()/WIDTH.toDouble - 1.0)*math.sqrt(2.0);
+    clicky = -(2.0*evt.getY()/HEIGHT.toDouble - 1.0)*math.sqrt(2.0);
     click = true; 
     if (evt.isShiftDown()) {
       clickEnd = true;
@@ -229,11 +227,11 @@ class TerrainView(t:Terrain) extends JPanel with MouseListener with MouseMotionL
   def mouseDragged(evt:MouseEvent):Unit = {
     val s = evt.getX()/WIDTH.toDouble;
     val t = evt.getY()/HEIGHT.toDouble;
-    if (smove || Math.abs(s - spin0) > threshold) {
+    if (smove || math.abs(s - spin0) > threshold) {
       spin1 = s;
       smove = true;
     }
-    if (tmove || Math.abs(t - tilt0) > threshold) {
+    if (tmove || math.abs(t - tilt0) > threshold) {
       tilt1 = t;
       tmove = true;
     }

@@ -139,51 +139,63 @@ import scala.collection.mutable.HashMap;
 
 class TerrainSearch(terrain:Terrain) {
 
+  def diff(x:(Vertex,Double)):Double = x._2
+
   def pathTo(start:Vertex,end:Vertex):List[Edge] = {
 
-        // marked:
-        // Set of all vertices whose neighbors have already been
-        // considered.
-        //
-        // prd:
+    // marked:
+    //
+    // Set of all vertices whose neighbors have already been
+    // considered.
+    //
+    // It is a "set" maintained by the search code.
+    //
+    val marked:HashSet[Vertex] = new HashSet[Vertex]();
+
         // Collection of vertex pairs (v,pi[v]), where pi[v] is
         // the vertex that led to v during the search.
-        //
-        // linkTo:
+    val pred:HashMap[Vertex,Vertex] = new HashMap[Vertex,Vertex]();
+
         // Collection of vertex pairs (v,e), where e is the edge
         // that led into v during the search.  That edge e corresponds
         // to the directed graph edge (pred(v),v).
         // It is a "map" maintained by the search code.  Each vertex
         // v has at most one entry, its "into" edge.
-
-    val marked:HashSet[Vertex] = new HashSet[Vertex]();
-    val prd:HashMap[Vertex,Vertex] = new HashMap[Vertex,Vertex]();
     val linkTo:HashMap[Vertex,Edge] = new HashMap[Vertex,Edge]();
 
+        // keeps track of distance from source
     val dist:HashMap[Vertex,Double] = new HashMap[Vertex,Double]();
-    val H = new Heap[Vertex](dist);
-    dist[H] = 0;
-    H.insert(start);
 
-    while (!H.isEmpty) {
-        val u:Vertex = H.extractMin(); // grab next vertex from queue
-        if (!marked.contains(u)) {
-	        marked.add(u);
-	        for (e <- u.outEdges) { // check outEdges
-	            // Get the neighbor vertex assoc'd with that edge.
-	            val v:Vertex = e.to;  
-	            if (!marked.contains(v)) {
-	                // If it hasn't yet been checked...
-	                H.decreaseKey(v);       // put it on the queue,
-	                pred.update(v,u);   // make or update its pred entry,
-	                linkTo.update(v,e); // and do the same with its link.
-	            }
-	        }
-      }   
-    }
+    
 
+    val Q:PriorityQueue[(Vertex,Double)] = new PriorityQueue[(Vertex,Double)]()(Ordering.by(diff));
+    Q.enqueue((start,0));
+
+    //while (!Q.isEmpty) {
+    //  // val u:Vertex = Q.dequeue; // grab next vertex from queue
+    //  if (!marked.contains(u)) {
+	//        marked.add(u);
+	//        for (e <- u.outEdges) { // check outEdges
+	//            // Get the neighbor vertex assoc'd with that edge.
+	//            val v:Vertex = e.to;  
+	//            if (!marked.contains(v)) {
+	//                // If it hasn't yet been checked...
+	//                // Q.enqueue(v);       // put it on the queue,
+	//                pred.update(v,u);   // make or update its pred entry,
+	//                linkTo.update(v,e); // and do the same with its link.
+	//            }
+	//        }
+    //  }   
+    //}
+
+    //// Build a list of edges that lead from the start to the end,
+    //// working backwards from the end, using pred/linkTo
+    //var v:Vertex = end;
     var es:List[Edge] = Nil;
+    //print("Building path...");
 
+    //// While a vertex has a pred/link...
+    //// (this should only "fail" if v == start)
     //while (pred.contains(v) && linkTo.contains(v)) {
 
     //  // ...shove the link into v onto the front,
