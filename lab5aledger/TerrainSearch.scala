@@ -140,62 +140,92 @@ import scala.collection.mutable.HashMap;
 class TerrainSearch(terrain:Terrain) {
 
   def weight(v1:Vertex, v2:Vertex):Double = {
+      // My weigth function only considers elevation, ie it only considers the change in the z coordinate
+      // this makes the paths look a little bit more interesting, because the length doesn't factor in at all
+      // The paths take on a squiggly look in certain areas of the image
+
+      // After calculating the change in elevation, we square it. (to further weight it. Cubing and etc. would give variance in elevation additional influence)
+      // and then multiply that value by 100 to scale the weight to a usable metric
+
       var retVal:Double = v1.z - v2.z;
 
       // take absolute value
       if (retVal < 0) { retVal = -retVal; }
 
-      return retVal*1000;
+      // scale
+      retVal = ((retVal*retVal))*100;
 
+      // return
+      return retVal;
   }
 
   def pathTo(start:Vertex,end:Vertex):List[Edge] = {
 
-        // marked:
-        // Set of all vertices whose neighbors have already been
-        // considered.
-        //
-        // prd:
-        // Collection of vertex pairs (v,pi[v]), where pi[v] is
-        // the vertex that led to v during the search.
-        //
-        // linkTo:
-        // Collection of vertex pairs (v,e), where e is the edge
-        // that led into v during the search.  That edge e corresponds
-        // to the directed graph edge (pred(v),v).
-        // It is a "map" maintained by the search code.  Each vertex
-        // v has at most one entry, its "into" edge.
+    // marked:
+    // Set of all vertices whose neighbors have already been
+    // considered.
+    //
+    // prd:
+    // Collection of vertex pairs (v,pi[v]), where pi[v] is
+    // the vertex that led to v during the search.
+    //
+    // linkTo:
+    // Collection of vertex pairs (v,e), where e is the edge
+    // that led into v during the search.  That edge e corresponds
+    // to the directed graph edge (pred(v),v).
+    // It is a "map" maintained by the search code.  Each vertex
+    // v has at most one entry, its "into" edge.
+    //
+    // dist:
+    // HashMap of vertex double pairs (Vertex,Double) where the double
+    // corresponds to the cost of arriving at the vertex from the starting vertex
+    //
+    // H:
+    // Binary Heap of vertices weighted by their dist (stored in dist)
+    // A min priority queue implemented as a binary heap that uses the HashMap dist
+    // as its priority values. 
 
     val marked:HashSet[Vertex] = new HashSet[Vertex]();
     val pred:HashMap[Vertex,Vertex] = new HashMap[Vertex,Vertex]();
     val linkTo:HashMap[Vertex,Edge] = new HashMap[Vertex,Edge]();
-
-    val dist:HashMap[Vertex,Double] = new HashMap[Vertex,Double]();
-    dist(start) = 0;
-
+    
+    val dist:HashMap[Vertex,Double] = new HashMap[Vertex,Double](); 
     val H = new Heap[Vertex](dist);
+
+    // initialization
+    dist(start) = 0;
     H.insert(start);
 
+    // Dijkstra's algorithm:
     while (!H.isEmpty) {
-     //   println("Size of dist is " + dist.size); 
         val u:Vertex = H.extractMin(); 
 	    for (e <- u.outEdges) { 
             // get associated vertex
 	        val v:Vertex = e.to; 
 
-            val alt = dist(u) + weight(u,v);
 
             // inline intializization of dist
+            // if dist doesn't contain v, add it
             if (!dist.contains(v)) { 
-    //            println("adding " + v + " to dist");
-                dist(v) = 10000000;
+                dist(v) = 1000000000;
             }
-            if (alt < dist(v)) {
-                dist(v) = alt;
-                pred.update(v,u);
-	            linkTo.update(v,e); // and do the same with its link.
 
+            // the new alternative dist to get to this vertex
+            val alt = dist(u) + weight(u,v);
+
+            // compare this alt weight to the former
+            // it it's less change the weight and reassess paths through this vertex
+            // otherwise, ignore it and continue on our merry way
+            if (alt < dist(v)) {
+
+                // now just update things
+                dist(v) = alt;
+                pred.update(v,u); 
+	            linkTo.update(v,e); 
+
+                // add to our priority queue H
                 if (H.contains(v)) {
+                    // "heapify", working with the change in dist(v) a few lines above
 	                H.decreaseKey(v);       
                 } else {
                     H.insert(v)
@@ -203,6 +233,8 @@ class TerrainSearch(terrain:Terrain) {
             }
 	    }
     }
+    // .........and dijkstra's is done. 
+    // all that's left is to unpack it
 
     var v:Vertex = end;
     var es:List[Edge] = Nil;
